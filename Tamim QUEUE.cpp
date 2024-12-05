@@ -1,94 +1,77 @@
 #include<iostream>
 using namespace std;
 
-class CircularQueue{
-    private:
-        int*items;
-        int front,rear,count,size;
+int main(){
+    int queueSize;
+    cout<<"Enter the size of the Queue: ";
+    cin>>queueSize;
 
-    public:
-      CircularQueue(int s){
-        size=s;
-        items=new int[size];
-        for(int i=0; i<size; i++){
-            items[i]=0;
-        }
-        front=-1;
-        rear=-1;
-        count=0;
-      }
-      CircularQueue(){
-        delete[]items;
-      }
-      bool isFull(){
-        return count==size;
-      }
-      bool isEmpty(){
-        return count==0;
-      }
-      //Enqueue function
-      void enqueue(int value, int pos=-1){
-        if(isFull()){
-            cout<<"Queue is Overflow!!"<<endl;
-        }else{
-            if(pos==-1){
-                pos=(rear+1)%size;
-            }
-            if(pos<0||pos>=size){
-                cout<<"Invalied Position sir!!"<<endl;
-                return;
-            }
-            if(count==0){
-                front=pos;
-                rear=pos;
+    int* items=new int[queueSize];
+    int front=-1,rear=-1,count=0;
+    for(int i=0;i<queueSize;i++){
+        items[i]=0;
+    }
+    cout<<"Main function:\n";
+    cout<<"1.Enqueue\n2.Dequeue\n3.Display queue list\n4.Exit program\n";
+
+    int choice,v,pos;
+    do{
+        cout<<"Enter your choice: ";
+        cin>>choice;
+        if(choice==1){
+            cout<<"Enter value: ";
+            cin>>v;
+            cout<<"Enter Position(0 to "<< queueSize-1 << ", -1 for default rear pos): ";
+            cin>>pos;
+            if(count == queueSize){
+                cout<<"Overflow!!"<<endl;
             }else{
-                if(items[pos] !=0){
-                   cout<<"Position already full!"<<endl;
-                   return;
+                if(pos==-1){
+                    pos=(rear+1)%queueSize;
                 }
-                rear=pos;
+                if(pos<0||pos>=queueSize){
+                    cout<<"Invalid Position sir!"<<endl;
+                }else if(count==0){
+                    front=pos;
+                    rear=pos;
+                    items[rear]=v;
+                    count++;
+                    cout<<"Enqued "<< v <<" at Position "<<pos<<endl;
+                }else if(items[pos] !=0){
+                    cout<<"Position already full.!"<<endl;
+                }else{
+                    rear=pos;
+                    items[rear]=v;
+                    count++;
+                    cout<<"Enqued "<< v <<" at Position "<<pos<<endl;
+                }
             }
-            items[rear]=value;
-            count++;
-            cout<<" Enqueued "<< value <<" at position "<<pos<<endl;
-        }
-      }
-      //Dequeue function
-      void dequeue(int pos=-1){
-        if(isEmpty()){
-            cout<<"Queue is underflow!" <<endl;
-        }else{
-            if(pos==-1){
-                pos=front;
-            }
-            if(pos<0||pos>=size||items[pos]==0){
-                cout<<"Invalid position or position empty!"<<endl;
-                return;
-            }
-            cout<<" Dequeued "<<items[pos]<<" from position "<< pos <<endl;
-            items[pos]=0;
-            count--;
-
+        }else if(choice==2){
+            cout<<"Enter Position(0 to "<< queueSize-1 << ", -1 for default front pos): ";
+            cin>>pos;
             if(count==0){
-                front=-1;
-                rear=-1;
-            }else if(pos==front){
-                front=(front+1)%size;
-                while(items[front]==0 &&front !=rear){
-                    front=(front+1)%size;
-                }
+                cout<<"Underflow!!"<<endl;
+            }else{
+                  cout<<"dequeued "<< items[pos] <<" from Position "<<pos<<endl;
+                  items[pos]=0;
+                  count--;
+                  if(count==0){
+                    front=-1;
+                    rear=-1;
+                  }else if(pos==front){
+                    front=(front+1)%queueSize;
+                    while(items[front]==0 && front !=rear){
+                        front=(front+1)%queueSize;
+                    }
+                  }
             }
-        }
-      }
-
-//Display function
-      void display(){
-        if(isEmpty()){
+        }else if(choice==3){
+        if(count==0){
             cout<<"Queue is empty."<<endl;
         }else{
             cout<<"Queue elements:\n";
-            for(int i=0; i<size;i++){
-                cout<<" Position " << i <<" : ";
+            for(int i=0;i<queueSize;i++){
+                cout<<" Position "<< i <<" : ";
                 if(items[i]==0){
                     cout<<"[-empty-]";
                 }else{
@@ -103,47 +86,12 @@ class CircularQueue{
                 cout<<endl;
             }
         }
-      }
-};
-
-//Main function
-int main(){
-    int queueSize;
-    cout<<"Enter the size of the Queue: ";
-    cin>>queueSize;
-
-    CircularQueue q(queueSize);
-    int choice,value,position;
-
-    cout<<"Queue main function:\n";
-    cout<<" 1.Enqueue\n 2.Dequeue\n 3.Display queue\n 4.Function exit\n";
-
-    do{
-        cout<<"Enter user choice: ";
-        cin>>choice;
-        switch(choice){
-         case 1:
-            cout<<"Enter value to enqueue: ";
-            cin>>value;
-            cout<<"Enter position(0 to " << queueSize-1 <<", or -1 for default rear position): ";
-            cin>>position;
-            q.enqueue(value, position);
-         break;
-         case 2:
-
-            cout<<"Enter position to dequeue(0 to "<< queueSize-1 <<", or -1 for default front position): ";
-            cin>>position;
-            q.dequeue(position);
-         break;
-         case 3:
-            q.display();
-         break;
-         case 4:
-            cout<<"Function is exiting...\nHave a good day."<<endl;
-         break;
-         default:
-         cout<<"Invalid choice sir! Please try again."<<endl;
-        }
+    }else if(choice==4){
+        cout<<"Program is exiting...\nHave a good day."<<endl;
+    }else{
+        cout<<"Invalid choice! please try agein."<<endl;
+    }
     }while(choice !=4);
-    return 0;
+    delete[]items;
+return 0;
 }
